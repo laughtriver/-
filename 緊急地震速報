@@ -38,11 +38,11 @@ async def on_message(message):
          await notify_earthquake(new_Eq_time,new_Eq_name, new_Eq_lever)
 
 async def main():
-    await bot.start("MTE5MTYwMTk4ODk1ODQzMzM3MQ.GSPF95._VKmvOy-zIcLU6hJ5_VzKoCaImmE39BwsIs6XY")
+    await bot.start("トークンが入る")
 
     await check_earthquake()
 
 if __name__ =="__main__":
     asyncio.run(main())
 
-bot.run("MTE5MTYwMTk4ODk1ODQzMzM3MQ.GSPF95._VKmvOy-zIcLU6hJ5_VzKoCaImmE39BwsIs6XY")
+bot.run("トークンが入る")
