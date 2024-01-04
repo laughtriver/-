@@ -1,48 +1,37 @@
+from Logger import Logger
 import discord
 from discord.ext import commands
-import requests
-import asyncio
+import settings
 
-intents = discord.Intents.default()
-intents.typing = False
-bot=commands.Bot(command_prefix=" ",intents=intents)
+cogs = ["events.ready"]
 
-@bot.event
-async def on_ready():
-    print(f'{bot.user.name}がログインしました')
+logger = Logger()
+logger.remove_oldlog()
+logger._create_log_gitignore()
+logger.info("Start main.py")
 
 
+class EQ_Bot(commands.Bot):
+    """
+    Discord.pyのBot定義ポイントです。
+    """
+
+    def __init__(self):
+        super().__init__(
+            command_prefix="s!",
+            intents=discord.Intents.all(),
+            application_id=settings.DISCORD_APP_ID
+        )
+        self.version = "1.0.0-beta"
+        self.admin_user: list[int] = settings.ADMIN_USER
+
+    async def setup_hook(self) -> None:
+        for cog in cogs:
+            await self.load_extension(cog)
+
+        await bot.tree.sync(
+            guild=discord.Object(id=int(settings.GUILD_ID)))
 
 
-async def check_earthquake():
-    while True:
-        await asyncio.sleep(60) 
-p2pquake_url="https://api.p2pquake.net/v2/history?codes=551&limit=1"
-
-
-p2pquake_json=requests.get(p2pquake_url).json()
-new_Eq_time=p2pquake_json[0]["earthquake"]["time"]
-new_Eq_lever=p2pquake_json[0]["earthquake"]["hypocenter"]["magnitude"]
-new_Eq_name=p2pquake_json[0]["earthquake"]["hypocenter"]["name"]
-
-
-async def notify_earthquake(new_Eq_time,new_eq_name, new_eq_level):
-    await channel.send(f"{new_Eq_time}に地震が発生しました! {new_Eq_name} - マグニチュード {new_Eq_lever}")
-
-if new_Eq_lever > 3.0:
-    asyncio.run(notify_earthquake(new_Eq_time,new_Eq_name, new_Eq_lever))
-
-@bot.event
-async def on_message(message):
-    if 'earthquake' in message.content.lower():
-         await notify_earthquake(new_Eq_time,new_Eq_name, new_Eq_lever)
-
-async def main():
-    await bot.start("トークンが入る")
-
-    await check_earthquake()
-
-if __name__ =="__main__":
-    asyncio.run(main())
-
-bot.run("トークンが入る")
+bot = EQ_Bot()
+bot.run(settings.DISCORD_TOKEN)
