@@ -1,0 +1,6 @@
+###### Requirements without Version Specifiers ######`
+discord.py
+requests
+python-dotenv
+Logger
+rich
