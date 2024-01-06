@@ -1,15 +1,15 @@
+import logging
 from Logger import Logger
 import discord
 from discord.ext import commands
 import settings
 
-cogs = ["events.ready"]
+cogs = ["events.ready","lib.EQ"]
 
 logger = Logger()
 logger.remove_oldlog()
 logger._create_log_gitignore()
 logger.info("Start main.py")
-
 
 class EQ_Bot(commands.Bot):
     """
@@ -28,6 +28,7 @@ class EQ_Bot(commands.Bot):
     async def setup_hook(self) -> None:
         for cog in cogs:
             await self.load_extension(cog)
+            logger.info("Loaded "+cog)
 
         await bot.tree.sync(
             guild=discord.Object(id=int(settings.GUILD_ID)))
